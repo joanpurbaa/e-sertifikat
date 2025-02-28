@@ -1,12 +1,25 @@
 "use client";
 import { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Home() {
 	const [file, setFile] = useState<File | null>(null);
+	const [preview, setPreview] = useState<string | null>(null);
 
 	const onDrop = useCallback((acceptedFiles: File[]) => {
 		setFile(acceptedFiles[0]);
+		setPreview(URL.createObjectURL(acceptedFiles[0]));
 	}, []);
 
 	const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -24,19 +37,44 @@ export default function Home() {
 						<>
 							<div className="flex justify-between">
 								<h1 className="text-2xl font-black">Tambahkan komponen sertifikat</h1>
-								<button
-									data-modal-target="default-modal"
-									data-modal-toggle="default-modal"
-									className="block text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
-									type="button">
-									Preview sertifikat
-								</button>
 							</div>
 							<form className="mt-5">
 								<div className="mb-6">
 									<label
 										htmlFor="text"
-										className="block mb-2 text-lg font-bold text-black">
+										className="block text-lg font-semibold text-black">
+										Preview sertifikat
+									</label>
+									<img className="w-[700px] my-2" src={preview} alt="" />
+									<AlertDialog>
+										<AlertDialogTrigger>
+											<button
+												className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+												Kembali untuk mengubah template sertifikat
+											</button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogHeader>
+												<AlertDialogTitle>
+													Kamu yakin mau mengganti template sertifikat?
+												</AlertDialogTitle>
+												<AlertDialogDescription>
+													Ini akan menghapus semua data yang sudah kamu isi
+												</AlertDialogDescription>
+											</AlertDialogHeader>
+											<AlertDialogFooter>
+												<AlertDialogCancel>Batal</AlertDialogCancel>
+												<AlertDialogAction onClick={() => setFile(null)}>
+													Ganti
+												</AlertDialogAction>
+											</AlertDialogFooter>
+										</AlertDialogContent>
+									</AlertDialog>
+								</div>
+								<div className="mb-6">
+									<label
+										htmlFor="text"
+										className="block mb-2 text-lg font-semibold text-black">
 										Nama kegiatan
 									</label>
 									<input
@@ -50,7 +88,7 @@ export default function Home() {
 								<div className="mb-6">
 									<label
 										htmlFor="text"
-										className="block mb-2 text-lg font-bold text-black">
+										className="block mb-2 text-lg font-semibold text-black">
 										Penyelenggara kegiatan
 									</label>
 									<input
@@ -64,7 +102,7 @@ export default function Home() {
 								<div className="mb-6">
 									<label
 										htmlFor="text"
-										className="block mb-2 text-lg font-bold text-black">
+										className="block mb-2 text-lg font-semibold text-black">
 										Nama penandatangan 1 (tanda tangan bagian kiri)
 									</label>
 									<input
@@ -78,7 +116,7 @@ export default function Home() {
 								<div className="mb-6">
 									<label
 										htmlFor="text"
-										className="block mb-2 text-lg font-bold text-black">
+										className="block mb-2 text-lg font-semibold text-black">
 										Nama penandatangan 2 (tanda tangan bagian tengah)
 									</label>
 									<input
@@ -92,7 +130,7 @@ export default function Home() {
 								<div className="mb-6">
 									<label
 										htmlFor="text"
-										className="block mb-2 text-lg font-bold text-black">
+										className="block mb-2 text-lg font-semibold text-black">
 										Nama penandatangan 3 (tanda tangan bagian kanan)
 									</label>
 									<input
@@ -139,9 +177,7 @@ export default function Home() {
 										<p className="mb-2 text-xl text-black">
 											<span className="font-bold">Click to upload</span> or drag and drop
 										</p>
-										<p className="text-lg font-semibold text-black">
-											PNG, JPG or JPEG
-										</p>
+										<p className="text-lg font-semibold text-black">PNG, JPG or JPEG</p>
 									</div>
 								</label>
 							</div>
