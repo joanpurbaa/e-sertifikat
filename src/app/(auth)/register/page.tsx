@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
-import { LoginSchema, RegisterSchema } from "@/lib/validation";
+import { RegisterSchema } from "@/lib/validation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,18 +19,32 @@ import Link from "next/link";
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [errorMessage, setErrorMessage] = useState<boolean>(false);
 
 	const form = useForm<z.infer<typeof RegisterSchema>>({
 		resolver: zodResolver(RegisterSchema),
 		defaultValues: {
-      username: "",
+			username: "",
 			email: "",
 			password: "",
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-		console.log(values);
+	const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
+		const response = await fetch("http://localhost:3000/api/auth/register", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(values),
+		});
+
+		const data = await response.json();
+		console.log(data.message);
+
+		if (!response.ok) {
+			setErrorMessage(data.message);
+		}
 	};
 
 	return (
@@ -55,6 +69,7 @@ export default function Register() {
 										/>
 									</FormControl>
 									<FormMessage className="text-base" />
+									{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 								</FormItem>
 							)}
 						/>
@@ -73,6 +88,7 @@ export default function Register() {
 										/>
 									</FormControl>
 									<FormMessage className="text-base" />
+									{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 								</FormItem>
 							)}
 						/>
