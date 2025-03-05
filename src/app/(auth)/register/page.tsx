@@ -11,19 +11,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
-import Google from "@/components/icons/Google";
-import { LoginSchema } from "@/lib/validation";
+import { LoginSchema, RegisterSchema } from "@/lib/validation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
 
-export default function Login() {
+export default function Register() {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
-	const form = useForm<z.infer<typeof LoginSchema>>({
-		resolver: zodResolver(LoginSchema),
+	const form = useForm<z.infer<typeof RegisterSchema>>({
+		resolver: zodResolver(RegisterSchema),
 		defaultValues: {
+      username: "",
 			email: "",
 			password: "",
 		},
@@ -36,10 +36,28 @@ export default function Login() {
 	return (
 		<div className="h-full flex flex-col justify-between">
 			<div>
-				<h1 className="text-7xl font-black">Login</h1>
-				<p className="mt-4 text-2xl">Welcome back! let&apos;s explore</p>
+				<h1 className="text-7xl font-black">Sign up</h1>
+				<p className="mt-4 text-2xl">Welcome! let&apos;s get deeper</p>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-10 space-y-8">
+						<FormField
+							control={form.control}
+							name="username"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-lg">Username</FormLabel>
+									<FormControl>
+										<Input
+											className="py-6 border border-input bg-transparent px-3 shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+											placeholder="Enter your username"
+											type="text"
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage className="text-base" />
+								</FormItem>
+							)}
+						/>
 						<FormField
 							control={form.control}
 							name="email"
@@ -50,6 +68,7 @@ export default function Login() {
 										<Input
 											className="py-6 border border-input bg-transparent px-3 shadow-sm transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
 											placeholder="Enter your email"
+											type="email"
 											{...field}
 										/>
 									</FormControl>
@@ -96,20 +115,10 @@ export default function Login() {
 						<Button variant="default" size="default" className="w-full" type="submit">
 							Submit
 						</Button>
-						<div className="flex justify-between items-center">
-							<div className="w-[220px] h[1px] border border-zinc-400 rounded-full"></div>
-							<p>or</p>
-							<div className="w-[220px] h[1px] border border-zinc-400 rounded-full"></div>
-						</div>
-						<a className="bg-gray-100 hover:bg-gray-200 flex justify-between items-center py-3 px-5 rounded-lg">
-							<Google />
-							<p>Continue with Google</p>
-							<div></div>
-						</a>
 						<p>
-							Dont&apos;t have an account?{" "}
-							<Link href="/register" className="text-blue-500 underline">
-								Sign up
+							Already have an account?{" "}
+							<Link href="/login" className="text-blue-500 underline">
+								Login
 							</Link>
 						</p>
 					</form>
