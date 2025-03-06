@@ -10,16 +10,18 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { CircleAlert, CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { RegisterSchema } from "@/lib/validation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Register() {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [errorMessage, setErrorMessage] = useState<boolean>(false);
+	const route = useRouter();
 
 	const form = useForm<z.infer<typeof RegisterSchema>>({
 		resolver: zodResolver(RegisterSchema),
@@ -40,10 +42,12 @@ export default function Register() {
 		});
 
 		const data = await response.json();
-		console.log(data.message);
 
-		if (!response.ok) {
+		if (data.status != 200) {
 			setErrorMessage(data.message);
+		} else {
+			setErrorMessage(false);
+			route.push("/");
 		}
 	};
 
@@ -54,6 +58,14 @@ export default function Register() {
 				<p className="mt-4 text-2xl">Welcome! let&apos;s get deeper</p>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-10 space-y-8">
+						{errorMessage && (
+							<div className="flex justify-center items-center border border-red-600 bg-red-400 text-white rounded-md p-3">
+								<div className="flex items-center gap-x-2">
+									<CircleAlert />
+									<p>{errorMessage}</p>
+								</div>
+							</div>
+						)}
 						<FormField
 							control={form.control}
 							name="username"
@@ -69,7 +81,6 @@ export default function Register() {
 										/>
 									</FormControl>
 									<FormMessage className="text-base" />
-									{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 								</FormItem>
 							)}
 						/>
@@ -88,7 +99,6 @@ export default function Register() {
 										/>
 									</FormControl>
 									<FormMessage className="text-base" />
-									{errorMessage && <p className="text-red-500">{errorMessage}</p>}
 								</FormItem>
 							)}
 						/>
