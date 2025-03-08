@@ -4,7 +4,7 @@ export default function Google() {
 			<svg
 				data-testid="geist-icon"
 				height="35"
-				stroke-linejoin="round"
+				strokeLinejoin="round"
 				viewBox="0 0 16 16"
 				width="35">
 				<path
