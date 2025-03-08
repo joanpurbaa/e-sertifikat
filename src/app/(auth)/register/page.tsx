@@ -47,7 +47,7 @@ export default function Register() {
 			setErrorMessage(data.message);
 		} else {
 			setErrorMessage(false);
-			route.push("/");
+			route.push("/login");
 		}
 	};
 

@@ -10,16 +10,20 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { CircleAlert, CopyrightIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import Google from "@/components/icons/Google";
 import { LoginSchema } from "@/lib/validation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { handleCredentialSignIn } from "@/src/lib/actions";
 
 export default function Login() {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [errorMessage, setErrorMessage] = useState<string | null | undefined>(
+		""
+	);
 
 	const form = useForm<z.infer<typeof LoginSchema>>({
 		resolver: zodResolver(LoginSchema),
@@ -29,8 +33,10 @@ export default function Login() {
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-		console.log(values);
+	const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+		const result = await handleCredentialSignIn(values);
+
+		setErrorMessage(result?.message)
 	};
 
 	return (
@@ -40,6 +46,14 @@ export default function Login() {
 				<p className="mt-4 text-2xl">Welcome back! let&apos;s explore</p>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className="mt-10 space-y-8">
+						{errorMessage && (
+							<div className="flex justify-center items-center border border-red-600 bg-red-400 text-white rounded-md p-3">
+								<div className="flex items-center gap-x-2">
+									<CircleAlert />
+									<p>{errorMessage}</p>
+								</div>
+							</div>
+						)}
 						<FormField
 							control={form.control}
 							name="email"

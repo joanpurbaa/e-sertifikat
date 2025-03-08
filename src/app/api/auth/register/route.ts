@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import prisma from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
 
 export async function POST(request: NextRequest) {
 	try {
+    const prisma = new PrismaClient();
 		const data = await request.json();
-
+    
 		const checkTheUsername = await prisma.user.findFirst({
 			where: {
-				username: data.username,
+				name: data.username,
 			},
 		});
 
@@ -33,12 +34,11 @@ export async function POST(request: NextRequest) {
 
 		await prisma.user.create({
 			data: {
-				username: data.username,
+				name: data.username,
 				email: data.email,
 				password: hashedPassword,
 			},
 		});
-
 		return NextResponse.json({ status: 200 });
 	} catch {
 		return NextResponse.json({ status: 404 });
